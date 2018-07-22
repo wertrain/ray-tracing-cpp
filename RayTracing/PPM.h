@@ -7,6 +7,9 @@
 class PPM
 {
 public:
+    static uint32_t RGB(const uint8_t r, const uint8_t g, const uint8_t b);
+
+public:
     PPM(const uint32_t width, const uint32_t height);
     ~PPM();
 

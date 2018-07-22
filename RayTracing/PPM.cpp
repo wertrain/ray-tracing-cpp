@@ -8,6 +8,11 @@
 
 #include "PPM.h"
 
+uint32_t PPM::RGB(const uint8_t r, const uint8_t g, const uint8_t b)
+{
+    return static_cast<uint32_t>((r << 16) | (g << 8) | (b << 0));
+}
+
 PPM::PPM(const uint32_t width, const uint32_t height)
     : width_(width)
     , height_(height)
