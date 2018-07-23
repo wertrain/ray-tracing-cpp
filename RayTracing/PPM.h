@@ -17,6 +17,9 @@ public:
     void SetPixel(const uint32_t x, const uint32_t y, const uint32_t color);
     bool Save(const char* filename);
     bool SaveAndPreview(const char* filename);
+    const uint32_t GetWidth() const;
+    const uint32_t GetHeight() const;
+    uint32_t &operator[](int i);
 
 private:
     uint32_t* pixels_;

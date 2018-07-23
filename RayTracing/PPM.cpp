@@ -77,3 +77,18 @@ bool PPM::SaveAndPreview(const char* filename)
     }
     return false;
 }
+
+const uint32_t PPM::GetWidth() const
+{
+    return width_;
+}
+
+const uint32_t PPM::GetHeight() const
+{
+    return height_;
+}
+
+uint32_t &PPM::operator[](int i)
+{
+    return pixels_[i];
+}
