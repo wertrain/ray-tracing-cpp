@@ -26,5 +26,8 @@
     <ClInclude Include="PPM.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

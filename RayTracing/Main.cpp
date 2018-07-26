@@ -1,12 +1,11 @@
 #include <cinttypes>
 #include "PPM.h"
+#include "Math.h"
 
-struct V
+struct Ray
 {
-    double x, y, z;
-    V(const double v) : x(v), y(v), z(v) {}
-    V(const double x, const double y, const double z) : x(x), y(y), z(z) {}
-    double &operator[](int i) const { (&x)[i]; }
+    V o; ///< Œ´“_
+    V d; ///< •ûŒü
 };
 
 int main()
