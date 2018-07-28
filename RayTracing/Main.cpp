@@ -79,8 +79,8 @@ int main()
         const int x = i % width;
         const int y = i / width;
         Ray ray;
-        ray.o = V(2.0 * (static_cast<double>(x) / width) - 1, 2.0 * (static_cast<double>(y) / height) - 1, 5);
-        ray.d = (0, 0, -1);
+        ray.o = V(2. * static_cast<double>(x) / width - 1, 2. * static_cast<double>(y) / height - 1, 5.);
+        ray.d = V(0, 0, -1);
 
         if (const auto h = scene.Intersect(ray, 0, 1e+10))
         {
