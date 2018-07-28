@@ -1,6 +1,9 @@
+#define _USE_MATH_DEFINES
 #include <cinttypes>
 #include <vector>
 #include <optional>
+#include <algorithm>
+#include <cmath>
 #include "PPM.h"
 #include "Math.h"
 
@@ -18,6 +21,8 @@ namespace
     {
         double t;             ///< レイの原点から交差した点までの距離
         const Sphere* sphere; ///< ヒットした球へのポインタ
+        V p;                  ///< 交差した点
+        V n;                  ///< p での法線
     };
 
     struct Sphere
@@ -59,9 +64,31 @@ namespace
                 minh = h;
                 tmax = minh->t;
             }
+            if (minh)
+            {
+                const auto* s = minh->sphere;
+                minh->p = ray.o + ray.d * minh->t;
+                minh->n = (minh->p - s->p) / s->r;
+            }
             return minh;
         }
     };
+
+    struct Camera
+    {
+        V eye;         ///< カメラ位置
+        V center;      ///< 注視点
+        V up;          ///< 上方向
+        double fov;    ///< 画角
+        double aspect; ///< アスペクト比
+    };
+
+    uint8_t tonemap(const double v) 
+    {
+        return std::min<uint8_t>(
+            std::max<uint8_t>(static_cast<uint8_t>(std::pow(v, 1 / 2.2) * 255), 0), 255
+        );
+    }
 }
 
 int main()
@@ -71,6 +98,13 @@ int main()
 
     const int width = 400;
     const int height = 320;
+
+    Camera camera;
+    camera.eye = V(5.0, 5.0, 5.0);
+    camera.center = V(0.0, 0.0, 0.0);
+    camera.up = V(0.0, 1.0, 0.0);
+    camera.fov = 30.0 * M_PI / 180.0;
+    camera.aspect = static_cast<double>(width) / static_cast<double>(height);
 
     PPM ppm(width, height);
 
@@ -84,7 +118,8 @@ int main()
 
         if (const auto h = scene.Intersect(ray, 0, 1e+10))
         {
-            ppm[i] = PPM::RGB(255, 0, 255);
+            const auto n = h->n;
+            ppm[i] = PPM::RGB(tonemap(n.x), tonemap(n.y), tonemap(n.z));
         }
         else
         {

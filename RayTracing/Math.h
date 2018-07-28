@@ -1,7 +1,7 @@
 /**
-* @file Math.h
-* @author wertrain
-*/
+ * @file Math.h
+ * @author wertrain
+ */
 #pragma once
 #define _USE_MATH_DEFINES
 #include <cmath>
