@@ -100,7 +100,7 @@ namespace
     uint8_t tonemap(const double v) 
     {
         return std::min<uint8_t>(
-            std::max<uint8_t>(static_cast<uint8_t>(std::pow(v, 1.0 / 2.2) * 255), 0), 255
+            std::max<uint8_t>(static_cast<uint8_t>(std::pow(v, 1 / 2.2) * 255), 0), 255
         );
     }
 }
@@ -108,14 +108,28 @@ namespace
 int main()
 {
     Scene scene;
-    scene.spheres.push_back({ V(0), 1 });
+    //scene.spheres.push_back({ V(0), 1 });
+
+    scene.spheres.push_back({ V(27,16.5,47), 16.5 });
+    scene.spheres.push_back({ V(73,16.5,78), 16.5 });
+
+    // Cornell Box
+    scene.spheres.push_back({ V(1e5 + 1, 40.8, 81.6), 1e5 });    // Left 
+    scene.spheres.push_back({ V(-1e5 + 99, 40.8, 81.6), 1e5 });  // Right 
+    scene.spheres.push_back({ V(50, 40.8, 1e5), 1e5 });          // Back
+    //scene.spheres.push_back({ V(50, 40.8, -1e5 + 170), 1e5 }); // Front
+    scene.spheres.push_back({ V(50, 1e5, 81.6), 1e5 });          // Bottom
+    scene.spheres.push_back({ V(50, -1e5 + 81.6, 81.6), 1e5 });  // Top
+
+    // Light
+    scene.spheres.push_back({ V(50,681.6 - .27,81.6), 600 });
 
     const int width = 400;
     const int height = 320;
 
     Camera camera;
-    camera.eye = V(5.0, 5.0, 5.0);
-    camera.center = V(0.0, 0.0, 0.0);
+    camera.eye = V(50.0, 52.0, 295.6);
+    camera.center = camera.eye + V(0.0, -0.042612, -1.0);
     camera.up = V(0.0, 1.0, 0.0);
     camera.fov = 30.0 * M_PI / 180.0;
     camera.aspect = static_cast<double>(width) / static_cast<double>(height);
@@ -149,7 +163,7 @@ int main()
         if (const auto h = scene.Intersect(ray, 0, 1e+10))
         {
             const auto n = h->n;
-            ppm[i] = PPM::RGB(tonemap(n.x), tonemap(n.y), tonemap(n.z));
+            ppm[i] = PPM::RGB(tonemap(std::abs(n.x)), tonemap(std::abs(n.y)), tonemap(std::abs(n.z)));
         }
         else
         {
