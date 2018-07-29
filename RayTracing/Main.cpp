@@ -100,7 +100,7 @@ namespace
     uint8_t tonemap(const double v) 
     {
         return std::min<uint8_t>(
-            std::max<uint8_t>(static_cast<uint8_t>(std::pow(v, 1.0 / 10) * 255), 0), 255
+            std::max<uint8_t>(static_cast<uint8_t>(std::pow(v, 1.0 / 2.2) * 255), 0), 255
         );
     }
 }
