@@ -1,3 +1,7 @@
+/**
+ * @file Main.cpp
+ * @author wertrain
+ */
 #define _USE_MATH_DEFINES
 #include <cinttypes>
 #include <vector>
@@ -81,12 +85,22 @@ namespace
         V up;          ///< 上方向
         double fov;    ///< 画角
         double aspect; ///< アスペクト比
+
+        /** 
+         * カメラの基底ベクトルを計算
+         */
+        void Calculate(V& wE, V& uE, V& vE)
+        {
+            wE = normalize(eye - center);
+            uE = normalize(cross(up, wE));
+            vE = cross(wE, uE);
+        }
     };
 
     uint8_t tonemap(const double v) 
     {
         return std::min<uint8_t>(
-            std::max<uint8_t>(static_cast<uint8_t>(std::pow(v, 1 / 2.2) * 255), 0), 255
+            std::max<uint8_t>(static_cast<uint8_t>(std::pow(v, 1.0 / 10) * 255), 0), 255
         );
     }
 }
@@ -105,16 +119,32 @@ int main()
     camera.up = V(0.0, 1.0, 0.0);
     camera.fov = 30.0 * M_PI / 180.0;
     camera.aspect = static_cast<double>(width) / static_cast<double>(height);
+    
+    V wE, uE, vE;
+    camera.Calculate(wE, uE, vE);
 
     PPM ppm(width, height);
 
     for (int i = 0; i < width * height; ++i)
     {
         const int x = i % width;
-        const int y = i / width;
+        //const int y = i / width;
+        const int y = height - i / width; // 上下反転
         Ray ray;
-        ray.o = V(2. * static_cast<double>(x) / width - 1, 2. * static_cast<double>(y) / height - 1, 5.);
-        ray.d = V(0, 0, -1);
+        //ray.o = V(2.0 * static_cast<double>(x) / width - 1, 2.0 * static_cast<double>(y) / height - 1, 5.0);
+        //ray.d = V(0, 0, -1);
+        ray.o = camera.eye;
+        ray.d = [&]()
+        {
+            // プライマリレイの生成
+            // 1. カメラ座標系での方向を求める
+            // 2. それをワールド座標系に変換
+            const double tf = std::tan(camera.fov * 0.5);
+            const double rpx = 2.0 * x / width - 1;
+            const double rpy = 2.0 * y / height - 1;
+            const V w = normalize(V(camera.aspect * tf * rpx, tf * rpy, -1));
+            return uE * w.x + vE * w.y + wE * w.z;
+        }();
 
         if (const auto h = scene.Intersect(ray, 0, 1e+10))
         {
