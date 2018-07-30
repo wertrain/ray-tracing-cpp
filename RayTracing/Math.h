@@ -54,3 +54,13 @@ V normalize(const V &v)
 {
     return v / sqrt(dot(v, v));
 }
+
+double DegreeToRadian(const double degree)
+{
+    return degree * M_PI / 180.0f;
+}
+
+double RadianToDegree(const double radian)
+{
+    return radian * 180.0f / M_PI;
+}

@@ -131,7 +131,7 @@ int main()
     camera.eye = V(50.0, 52.0, 295.6);
     camera.center = camera.eye + V(0.0, -0.042612, -1.0);
     camera.up = V(0.0, 1.0, 0.0);
-    camera.fov = 30.0 * M_PI / 180.0;
+    camera.fov = DegreeToRadian(30.0);
     camera.aspect = static_cast<double>(width) / static_cast<double>(height);
     
     V wE, uE, vE;
