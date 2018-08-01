@@ -141,7 +141,7 @@ int main()
 
     PPM ppm(width, height);
 
-    #pragma omp parallel for schedule(dynamic, 1)
+    //#pragma omp parallel for schedule(dynamic, 1)
     std::chrono::system_clock::time_point  start, end;
     start = std::chrono::system_clock::now(); // Œv‘ªŠJŽnŽžŠÔ
     for (int i = 0; i < width * height; ++i)
