@@ -33,8 +33,9 @@ namespace
 
     struct Sphere
     {
-        V p;      ///< 中心位置
-        double r; ///< 半径
+        V p;       ///< 中心位置
+        double r;  ///< 半径
+        V R;       ///< 反射率 [Reflectance]
 
         std::optional<Hit> Intersect(const Ray& ray, const double tmin, const double tmax) const
         {
@@ -112,16 +113,16 @@ int main()
     Scene scene;
     //scene.spheres.push_back({ V(0), 1 });
 
-    scene.spheres.push_back({ V(27,16.5,47), 16.5 });
-    scene.spheres.push_back({ V(73,16.5,78), 16.5 });
+    scene.spheres.push_back({ V(27,16.5,47), 16.5, V(.99) });
+    scene.spheres.push_back({ V(73,16.5,78), 16.5, V(.99) });
 
     // Cornell Box
-    scene.spheres.push_back({ V(1e5 + 1, 40.8, 81.6), 1e5 });    // Left 
-    scene.spheres.push_back({ V(-1e5 + 99, 40.8, 81.6), 1e5 });  // Right 
-    scene.spheres.push_back({ V(50, 40.8, 1e5), 1e5 });          // Back
-    //scene.spheres.push_back({ V(50, 40.8, -1e5 + 170), 1e5 }); // Front
-    scene.spheres.push_back({ V(50, 1e5, 81.6), 1e5 });          // Bottom
-    scene.spheres.push_back({ V(50, -1e5 + 81.6, 81.6), 1e5 });  // Top
+    scene.spheres.push_back({ V(1e5 + 1, 40.8, 81.6),   1e5, V(.75, .25, .25) });  // Left 
+    scene.spheres.push_back({ V(-1e5 + 99, 40.8, 81.6), 1e5, V(.25, .25, .75) });  // Right 
+    scene.spheres.push_back({ V(50, 40.8, 1e5),         1e5, V(.75, .75, .75) });  // Back
+    //scene.spheres.push_back({ V(50, 40.8, -1e5 + 170), 1e5, V(.75, .75, .75) }); // Front
+    scene.spheres.push_back({ V(50, 1e5, 81.6),         1e5, V(.75, .75, .75) });  // Bottom
+    scene.spheres.push_back({ V(50, -1e5 + 81.6, 81.6), 1e5, V(.75, .75, .75) });  // Top
 
     // Light
     scene.spheres.push_back({ V(50,681.6 - .27,81.6), 600 });
@@ -167,7 +168,9 @@ int main()
 
         if (const auto h = scene.Intersect(ray, 0, 1e+10))
         {
-            const auto n = h->n;
+            // ランバート反射
+            // 反射率が入射光と法線の間の cos に比例する
+            const auto n = h->sphere->R * dot(h->n, -ray.d); // 法線と入射光（カメラレイの方向から）
             ppm[i] = PPM::RGB(tonemap(std::abs(n.x)), tonemap(std::abs(n.y)), tonemap(std::abs(n.z)));
         }
         else
