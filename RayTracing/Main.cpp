@@ -170,7 +170,7 @@ int main()
         {
             // ランバート反射
             // 反射率が入射光と法線の間の cos に比例する
-            const auto n = h->sphere->R * dot(h->n, -ray.d); // 法線と入射光（カメラレイの方向から）
+            const auto n = h->sphere->R * dot(h->n, -ray.d); // 法線と入射光（カメラレイの方向から入射）
             ppm[i] = PPM::RGB(tonemap(std::abs(n.x)), tonemap(std::abs(n.y)), tonemap(std::abs(n.z)));
         }
         else
