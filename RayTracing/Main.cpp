@@ -143,8 +143,7 @@ int main()
     PPM ppm(width, height);
 
     //#pragma omp parallel for schedule(dynamic, 1)
-    std::chrono::system_clock::time_point  start, end;
-    start = std::chrono::system_clock::now(); // 計測開始時間
+    const std::chrono::system_clock::time_point start = std::chrono::system_clock::now(); // 計測開始時間
     for (int i = 0; i < width * height; ++i)
     {
         const int x = i % width;
@@ -178,8 +177,7 @@ int main()
             ppm[i] = PPM::RGB(0, 0, 0);
         }
     }
-    end = std::chrono::system_clock::now();
-    const int64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    const int64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start).count();
     std::cout << elapsed << " millisec." << std::endl;
 
     ppm.SaveAndPreview("result.ppm");
