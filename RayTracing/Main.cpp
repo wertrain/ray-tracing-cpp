@@ -128,7 +128,7 @@ int main()
     scene.spheres.push_back({ V(50,681.6 - .27,81.6), 600 });
 
     const int width = 400;
-    const int height = 320;
+    const int height = 400;
 
     Camera camera;
     camera.eye = V(50.0, 52.0, 295.6);
