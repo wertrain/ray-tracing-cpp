@@ -17,12 +17,14 @@ namespace
 {
     struct Sphere;
 
+    /// レイ
     struct Ray
     {
         V o; ///< 原点
         V d; ///< 方向
     };
 
+    /// ヒット
     struct Hit
     {
         double t;             ///< レイの原点から交差した点までの距離
@@ -31,6 +33,7 @@ namespace
         V n;                  ///< p での法線
     };
 
+    /// 球
     struct Sphere
     {
         V p;       ///< 中心位置
@@ -53,6 +56,7 @@ namespace
         }
     };
 
+    /// シーン
     struct Scene
     {
         std::vector<Sphere> spheres;
@@ -81,6 +85,7 @@ namespace
         }
     };
 
+    /// カメラ
     struct Camera
     {
         V eye;         ///< カメラ位置
@@ -161,7 +166,7 @@ int main()
             const double tf = std::tan(camera.fov * 0.5);
             const double rpx = 2.0 * x / width - 1;
             const double rpy = 2.0 * y / height - 1;
-            const V w = normalize(V(camera.aspect * tf * rpx, tf * rpy, -1));
+            const V w = normalize(V(camera.aspect * tf * rpx, tf * rpy, -1.0));
             return uE * w.x + vE * w.y + wE * w.z;
         }();
 
