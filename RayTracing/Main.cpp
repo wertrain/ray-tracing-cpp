@@ -10,6 +10,7 @@
 #include <cmath>
 #include <chrono>
 #include <iostream>
+#include <random>
 #include "PPM.h"
 #include "Math.h"
 
@@ -103,6 +104,20 @@ namespace
             uE = normalize(cross(up, wE));
             vE = cross(wE, uE);
         }
+    };
+    
+    /// —”¶¬
+    struct Random
+    {
+        std::mt19937 engine;
+        std::uniform_real_distribution<double> dist;
+        Random() {};
+        Random(int seed)
+        {
+            engine.seed(seed);
+            dist.reset();
+        }
+        double Next() { return dist(engine); }
     };
 
     uint8_t tonemap(const double v) 
