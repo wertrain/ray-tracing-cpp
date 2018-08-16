@@ -64,3 +64,15 @@ double RadianToDegree(const double radian)
 {
     return radian * 180.0f / M_PI;
 }
+
+std::tuple<V, V> tangentSpace(const V& n)
+{
+    const double s = std::copysign(1, n.z);
+    const double a = -1 / (s + n.z);
+    const double b = n.x*n.y*a;
+    return
+    {
+        V(1 + s * n.x*n.x*a,s*b,-s * n.x),
+        V(b,s + n.y*n.y*a,-n.y)
+    };
+}
