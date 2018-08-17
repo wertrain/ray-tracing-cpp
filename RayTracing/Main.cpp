@@ -149,8 +149,8 @@ int main()
     Scene scene;
     //scene.spheres.push_back({ V(0), 1 });
 
-    scene.spheres.push_back({ V(27,16.5,47), 16.5, V(.99) });
-    scene.spheres.push_back({ V(73,16.5,78), 16.5, V(.99) });
+    scene.spheres.push_back({ V(27,16.5,47), 16.5, V(.999) });
+    scene.spheres.push_back({ V(73,16.5,78), 16.5, V(.999) });
 
     // Cornell Box
     scene.spheres.push_back({ V(1e5 + 1, 40.8, 81.6),   1e5, V(.75, .25, .25) });  // Left 
@@ -158,14 +158,14 @@ int main()
     scene.spheres.push_back({ V(50, 40.8, 1e5),         1e5, V(.75, .75, .75) });  // Back
     //scene.spheres.push_back({ V(50, 40.8, -1e5 + 170), 1e5, V(.75, .75, .75) }); // Front
     scene.spheres.push_back({ V(50, 1e5, 81.6),         1e5, V(.75, .75, .75) });  // Bottom
-    scene.spheres.push_back({ V(50, -1e5 + 81.6, 81.6), 1e5, V(.75, .75, .75) });  // Top
+    scene.spheres.push_back({ V(50, -1e5 + 81.6, 81.6), 1e5, V(.75, .75, .75), V(12) });  // Top
 
     // Light
-    scene.spheres.push_back({ V(50,681.6 - .27,81.6), 600, V(0), V(12) });
+    scene.spheres.push_back({ V(50,681.6 - .27,81.6), 600, V(), V(12) });
 
-    const int width = 400;
-    const int height = 400;
-    const int SamplesPerPixel = 1;
+    const int width = 300;
+    const int height = 300;
+    const int SamplesPerPixel = 10;
 
     Camera camera;
     camera.eye = V(50.0, 52.0, 295.6);
@@ -249,24 +249,9 @@ int main()
                 {
                     break;
                 }
-                ppm[i] = toColor(fromColor(ppm[i]) + L / SamplesPerPixel);
             }
-
-            if (const auto h = scene.Intersect(ray, 0, 1e+10))
-            {
-                // ランバート反射
-                // 反射率が入射光と法線の間の cos に比例する
-                const auto n = h->sphere->R * dot(h->n, -ray.d); // 法線と入射光（カメラレイの方向から入射）
-                ppm[i] = PPM::RGB(tonemap(std::abs(n.x)), tonemap(std::abs(n.y)), tonemap(std::abs(n.z)));
-            }
-            else
-            {
-                ppm[i] = PPM::RGB(0, 0, 0);
-            }
-            
+            ppm[i] = toColor(fromColor(ppm[i]) + L / SamplesPerPixel);
         }
-
-
     }
     const int64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start).count();
     std::cout << elapsed << " millisec." << std::endl;
