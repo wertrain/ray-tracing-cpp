@@ -5,6 +5,7 @@
 #include <cinttypes>
 #include <fstream>
 #include <string>
+#include <iostream>
 
 #include "PPM.h"
 
@@ -86,6 +87,21 @@ const uint32_t PPM::GetWidth() const
 const uint32_t PPM::GetHeight() const
 {
     return height_;
+}
+
+void PPM::Dump() const
+{
+    for (int y = 0; y < static_cast<int>(height_); ++y)
+    {
+        for (int x = 0; x < static_cast<int>(width_); ++x)
+        {
+            const uint32_t color = pixels_[x + (y * width_)];
+            uint8_t red = static_cast<uint8_t>((color & 0xFF0000) >> 16);
+            uint8_t green = static_cast<uint8_t>((color & 0x00FF00) >> 8);
+            uint8_t blue = static_cast<uint8_t>((color & 0x0000FF) >> 0);
+            std::cout << std::to_string(red) << " " << std::to_string(green) << " " << std::to_string(blue) << std::endl;
+        }
+    }
 }
 
 uint32_t &PPM::operator[](int i)

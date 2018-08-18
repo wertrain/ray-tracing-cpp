@@ -19,6 +19,7 @@ public:
     bool SaveAndPreview(const char* filename);
     const uint32_t GetWidth() const;
     const uint32_t GetHeight() const;
+    void Dump() const;
     uint32_t &operator[](int i);
 
 private:

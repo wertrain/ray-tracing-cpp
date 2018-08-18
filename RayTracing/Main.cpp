@@ -123,11 +123,11 @@ namespace
         double Next() { return dist(engine); }
     };
 
-    uint8_t tonemap(const double v) 
+    uint8_t tonemap(const double v)
     {
-        return std::min<uint8_t>(
-            std::max<uint8_t>(static_cast<uint8_t>(std::pow(v, 1 / 2.2) * 255), 0), 255
-        );
+        return static_cast<uint8_t>(std::min(
+            std::max(int(std::pow(v, 1 / 2.2) * 255), 0), 255
+        ));
     }
 
     V fromColor(const uint32_t color)
@@ -136,11 +136,6 @@ namespace
         double green = static_cast<double>((color & 0x00FF00) >> 8);
         double blue = static_cast<double>((color & 0x0000FF) >> 0);
         return V(red, green, blue);
-    }
-    
-    uint32_t toColor(const V& color)
-    {
-        return PPM::RGB(static_cast<uint8_t>(color.x), static_cast<uint8_t>(color.y), static_cast<uint8_t>(color.z));
     }
 }
 
@@ -158,14 +153,14 @@ int main()
     scene.spheres.push_back({ V(50, 40.8, 1e5),         1e5, V(.75, .75, .75) });  // Back
     //scene.spheres.push_back({ V(50, 40.8, -1e5 + 170), 1e5, V(.75, .75, .75) }); // Front
     scene.spheres.push_back({ V(50, 1e5, 81.6),         1e5, V(.75, .75, .75) });  // Bottom
-    scene.spheres.push_back({ V(50, -1e5 + 81.6, 81.6), 1e5, V(.75, .75, .75), V(12) });  // Top
+    scene.spheres.push_back({ V(50, -1e5 + 81.6, 81.6), 1e5, V(.75, .75, .75) });  // Top
 
     // Light
     scene.spheres.push_back({ V(50,681.6 - .27,81.6), 600, V(), V(12) });
 
     const int width = 300;
     const int height = 300;
-    const int SamplesPerPixel = 10;
+    const int SamplesPerPixel = 100;
 
     Camera camera;
     camera.eye = V(50.0, 52.0, 295.6);
@@ -177,8 +172,7 @@ int main()
     V wE, uE, vE;
     camera.Calculate(wE, uE, vE);
 
-    PPM ppm(width, height);
-
+    std::vector<V> I(width * height);
     const std::chrono::system_clock::time_point start = std::chrono::system_clock::now(); // 計測開始時間
 
     #pragma omp parallel for schedule(dynamic, 1)
@@ -208,7 +202,7 @@ int main()
             // レイの方向が決まったので、光の反射を計算していく
             V L(0);  // 照度の一時変数
             V th(1); // 光の経路を通した輝度の変化を記録するための変数（throughput）
-            for (int depth = 0; depth < 1; ++depth)
+            for (int depth = 0; depth < 10; ++depth)
             {
                 // 与えられたレイに対する交差判定
                 if (const auto h = scene.Intersect(ray, 1e-4, 1e+10)) // 自分自身にぶつかるのを避けるため、1e-4 のような小さい値を入れる
@@ -238,7 +232,7 @@ int main()
                         // 方向のワールド座標変換
                         return std::get<0>(tuple) * d.x + std::get<1>(tuple) * d.y + n * d.z;
                     }();
-                    // throughput を更新します
+                    // throughput を更新
                     th = th * h->sphere->R;
                     if (std::max({ th.x, th.y, th.z }) == 0)
                     {
@@ -250,12 +244,18 @@ int main()
                     break;
                 }
             }
-            ppm[i] = toColor(fromColor(ppm[i]) + L / SamplesPerPixel);
+            I[i] = I[i] + L / SamplesPerPixel;
         }
     }
     const int64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start).count();
     std::cout << elapsed << " millisec." << std::endl;
 
+    PPM ppm(width, height);
+    for (int i = 0; i < width * height; ++i)
+    {
+        ppm[i] = PPM::RGB(tonemap(I[i].x), tonemap(I[i].y), tonemap(I[i].z));
+    }
     ppm.SaveAndPreview("result.ppm");
+
     return 0;
 }

@@ -9,7 +9,7 @@
 struct V
 {
     double x, y, z;
-    V(){}
+    V() : x(0), y(0), z(0) {}
     V(const double v) : x(v), y(v), z(v) {}
     V(const double x, const double y, const double z) : x(x), y(y), z(z) {}
     double &operator[](int i) const { (&x)[i]; }
