@@ -158,9 +158,9 @@ int main()
     // Light
     scene.spheres.push_back({ V(50,681.6 - .27,81.6), 600, V(), V(12) });
 
-    const int width = 300;
-    const int height = 300;
-    const int SamplesPerPixel = 100;
+    const int width = 800;
+    const int height = 600;
+    const int SamplesPerPixel = 1000;
 
     Camera camera;
     camera.eye = V(50.0, 52.0, 295.6);
