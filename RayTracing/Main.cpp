@@ -222,7 +222,7 @@ int main()
                         const auto& tuple = tangentSpace(n);
                         const auto d = [&]() {
                             const double r = sqrt(rng.Next());
-                            const double t = 2 * M_PI * rng.Next();
+                            const double t = 2.0 * M_PI * rng.Next();
                             const double x = r * cos(t);
                             const double y = r * sin(t);
                             return V(x, y,
