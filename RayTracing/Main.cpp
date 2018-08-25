@@ -139,7 +139,15 @@ namespace
     }
 }
 
-int main()
+struct RenderParam
+{
+    int width;
+    int height;
+    int samplesPerPixel;
+    int depth;
+};
+
+void chapter1(std::vector<V>& image, const RenderParam& param)
 {
     Scene scene;
     //scene.spheres.push_back({ V(0), 1 });
@@ -151,30 +159,32 @@ int main()
     scene.spheres.push_back({ V(1e5 + 1, 40.8, 81.6),   1e5, V(.75, .25, .25) });  // Left 
     scene.spheres.push_back({ V(-1e5 + 99, 40.8, 81.6), 1e5, V(.25, .25, .75) });  // Right 
     scene.spheres.push_back({ V(50, 40.8, 1e5),         1e5, V(.75, .75, .75) });  // Back
-    //scene.spheres.push_back({ V(50, 40.8, -1e5 + 170), 1e5, V(.75, .75, .75) }); // Front
+                                                                                   //scene.spheres.push_back({ V(50, 40.8, -1e5 + 170), 1e5, V(.75, .75, .75) }); // Front
     scene.spheres.push_back({ V(50, 1e5, 81.6),         1e5, V(.75, .75, .75) });  // Bottom
     scene.spheres.push_back({ V(50, -1e5 + 81.6, 81.6), 1e5, V(.75, .75, .75) });  // Top
 
-    // Light
+                                                                                   // Light
     scene.spheres.push_back({ V(50,681.6 - .27,81.6), 600, V(), V(12) });
 
-    const int width = 800;
-    const int height = 600;
-    const int SamplesPerPixel = 1000;
+    const int width = param.width;
+    const int height = param.height;
+    const int SamplesPerPixel = param.samplesPerPixel;
 
+    // カメラパラメータ設定
     Camera camera;
     camera.eye = V(50.0, 52.0, 295.6);
     camera.center = camera.eye + V(0.0, -0.042612, -1.0);
     camera.up = V(0.0, 1.0, 0.0);
     camera.fov = DegreeToRadian(30.0);
     camera.aspect = static_cast<double>(width) / static_cast<double>(height);
-    
+
     V wE, uE, vE;
     camera.Calculate(wE, uE, vE);
 
-    std::vector<V> I(width * height);
+    // 時間計測の開始
     const std::chrono::system_clock::time_point start = std::chrono::system_clock::now(); // 計測開始時間
 
+    // マルチスレッド設定
     #pragma omp parallel for schedule(dynamic, 1)
     for (int i = 0; i < width * height; ++i)
     {
@@ -202,7 +212,7 @@ int main()
             // レイの方向が決まったので、光の反射を計算していく
             V L(0);  // 照度の一時変数
             V th(1); // 光の経路を通した輝度の変化を記録するための変数（throughput）
-            for (int depth = 0; depth < 10; ++depth)
+            for (int depth = 0; depth < param.depth; ++depth)
             {
                 // 与えられたレイに対する交差判定
                 if (const auto h = scene.Intersect(ray, 1e-4, 1e+10)) // 自分自身にぶつかるのを避けるため、1e-4 のような小さい値を入れる
@@ -244,11 +254,28 @@ int main()
                     break;
                 }
             }
-            I[i] = I[i] + L / SamplesPerPixel;
+            image[i] = image[i] + L / SamplesPerPixel;
         }
     }
     const int64_t elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start).count();
     std::cout << elapsed << " millisec." << std::endl;
+}
+
+int main()
+{
+    const int width = 200;
+    const int height = 200;
+    const int samplesPerPixel = 100;
+    const int depth = 10;
+
+    RenderParam param;
+    param.width = width;
+    param.height = height;
+    param.samplesPerPixel = samplesPerPixel;
+    param.depth = depth;
+
+    std::vector<V> I(width * height);
+    chapter1(I, param);
 
     PPM ppm(width, height);
     for (int i = 0; i < width * height; ++i)
