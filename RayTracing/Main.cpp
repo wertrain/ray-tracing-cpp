@@ -147,6 +147,7 @@ namespace
     }
 }
 
+// •`‰æƒpƒ‰ƒ[ƒ^
 struct RenderParam
 {
     int width;
