@@ -422,7 +422,7 @@ int main()
 {
     const int width = 800;
     const int height = 600;
-    const int samplesPerPixel = 50;
+    const int samplesPerPixel = 1000;
     const int depth = 10;
 
     RenderParam param;
