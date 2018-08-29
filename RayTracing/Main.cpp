@@ -145,6 +145,8 @@ namespace
         double blue = static_cast<double>((color & 0x0000FF) >> 0);
         return V(red, green, blue);
     }
+
+
 }
 
 // •`‰æƒpƒ‰ƒ[ƒ^
@@ -422,6 +424,7 @@ int main()
 {
     const int width = 800;
     const int height = 600;
+    const int pixels = width * height;
     const int samplesPerPixel = 1000;
     const int depth = 10;
 
@@ -431,11 +434,11 @@ int main()
     param.samplesPerPixel = samplesPerPixel;
     param.depth = depth;
 
-    std::vector<V> I(width * height);
+    std::vector<V> I(pixels);
     chapter2(I, param);
 
     PPM ppm(width, height);
-    for (int i = 0; i < width * height; ++i)
+    for (int i = 0; i < pixels; ++i)
     {
         ppm[i] = PPM::RGB(tonemap(I[i].x), tonemap(I[i].y), tonemap(I[i].z));
     }
