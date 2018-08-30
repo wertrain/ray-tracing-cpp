@@ -145,8 +145,6 @@ namespace
         double blue = static_cast<double>((color & 0x0000FF) >> 0);
         return V(red, green, blue);
     }
-
-
 }
 
 // •`‰æƒpƒ‰ƒ[ƒ^
