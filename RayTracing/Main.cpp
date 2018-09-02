@@ -33,7 +33,8 @@ namespace
         double t;             ///< レイの原点から交差した点までの距離
         const Sphere* sphere; ///< ヒットした球へのポインタ
         V p;                  ///< 交差した点
-        V n;                  ///< p での法線
+        V n;                  
+        ///< p での法線
     };
 
     /// 材質のタイプ
@@ -52,6 +53,7 @@ namespace
         SurfaceType type; ///< 表面材質の種類
         V R;              ///< 反射率 [Reflectance]
         V Le;             ///< 照度 [Illuminance]
+        double ior;       ///< 屈折率
 
         std::optional<Hit> Intersect(const Ray& ray, const double tmin, const double tmax) const
         {
