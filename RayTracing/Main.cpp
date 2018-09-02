@@ -41,6 +41,7 @@ namespace
     {
         Diffuse, ///< ŠgŽU–Ê
         Mirror,  ///< ‹¾–Ê
+        Fresnel, ///< ‹üÜ
     };
 
     /// ‹…
