@@ -295,7 +295,7 @@ void chapter2(std::vector<V>& image, const RenderParam& param)
 {
     Scene scene;
     scene.spheres.push_back({ V(27,16.5,47), 16.5, SurfaceType::Mirror, (.999) });
-    scene.spheres.push_back({ V(73,16.5,78), 16.5, SurfaceType::Mirror, V(.999) });
+    scene.spheres.push_back({ V(73,16.5,78), 16.5, SurfaceType::Fresnel, V(.999) });
     // Cornell Box
     scene.spheres.push_back({ V(1e5 + 1, 40.8, 81.6),   1e5, SurfaceType::Diffuse, V(.75, .25, .25) });  // Left 
     scene.spheres.push_back({ V(-1e5 + 99, 40.8, 81.6), 1e5, SurfaceType::Diffuse, V(.25, .25, .75) });  // Right 
@@ -398,6 +398,35 @@ void chapter2(std::vector<V>& image, const RenderParam& param)
                                 const auto wi = -ray.d;
                                 return 2 * dot(wi, h->n) * h->n - wi;
                             }
+                            // 屈折
+                            case SurfaceType::Fresnel:
+                            {
+                                // 入射するレイの方向に応じて、法線や屈折率の比を計算する
+                                const auto wi = -ray.d;
+                                const auto into = dot(wi, h->n) > 0;
+                                const auto n = into ? h->n : -h->n;
+                                const auto ior = h->sphere->ior;
+                                const auto eta = into ? 1 / ior : ior;
+                                // スネルの法則を使って屈折した際のベクトルを計算
+                                const auto wt = [&]()->std::optional<V>
+                                {
+                                    const auto t = dot(wi, n);
+                                    const auto t2 = 1 - eta * eta * (1 - t * t);
+                                    if (t2 < 0) { return {}; } // 全反射が起きるケース
+                                    return eta * (n * t - wi) - n * sqrt(t2);
+                                }();
+                                if (!wt) return 2 * dot(wi, h->n) * h->n - wi;
+
+                                // Schlick の近似を使ってフレネルの式の近似を計算
+                                const auto Fr = [&]()
+                                {
+                                    const auto cos = into ? dot(wi, h->n) : dot(*wt, h->n);
+                                    const auto r = (1 - ior) / (1 + ior);
+                                    return r * r + (1 - r * r * pow(1 - cos, 5));
+                                }();
+                                return rng.Next() < Fr ? 2 * dot(wi, h->n) * h->n - wi : *wt;
+                            }
+
                         }
                         // ここには到達しないはず
                         return V();
