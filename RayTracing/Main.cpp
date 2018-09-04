@@ -426,7 +426,6 @@ void chapter2(std::vector<V>& image, const RenderParam& param)
                                 }();
                                 return rng.Next() < Fr ? 2 * dot(wi, h->n) * h->n - wi : *wt;
                             }
-
                         }
                         // ‚±‚±‚É‚Í“ž’B‚µ‚È‚¢‚Í‚¸
                         return V();
