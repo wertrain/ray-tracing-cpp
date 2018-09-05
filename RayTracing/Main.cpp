@@ -134,6 +134,7 @@ namespace
         double Next() { return dist(engine); }
     };
 
+    /// トーンマップ
     uint8_t tonemap(const double v)
     {
         return static_cast<uint8_t>(std::min(
