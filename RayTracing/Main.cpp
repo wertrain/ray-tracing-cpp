@@ -55,6 +55,9 @@ namespace
         V Le;             ///< 照度 [Illuminance]
         double ior;       ///< 屈折率
 
+        /** 
+         * 交差判定
+         */
         std::optional<Hit> Intersect(const Ray& ray, const double tmin, const double tmax) const
         {
             // 球上の点 x: |x - 球の中心位置| = 球の半径
