@@ -145,6 +145,7 @@ namespace
         ));
     }
 
+    // 色の整数値 RGB をベクトルに変換 
     V fromColor(const uint32_t color)
     {
         double red = static_cast<double>((color & 0xFF0000) >> 16);
