@@ -53,7 +53,7 @@ namespace
         SurfaceType type; ///< •\–ÊÞŽ¿‚ÌŽí—Þ
         V R;              ///< ”½ŽË—¦ [Reflectance]
         V Le;             ///< Æ“x [Illuminance]
-        double ior;       ///< ‹üÜ—¦
+        double ior = 1.5168; ///< ‹üÜ—¦
 
         /** 
          * Œð·”»’è
@@ -427,7 +427,7 @@ void chapter2(std::vector<V>& image, const RenderParam& param)
                                 {
                                     const auto cos = into ? dot(wi, h->n) : dot(*wt, h->n);
                                     const auto r = (1 - ior) / (1 + ior);
-                                    return r * r + (1 - r * r * pow(1 - cos, 5));
+                                    return r * r + (1 - r * r) * pow(1 - cos, 5);
                                 }();
                                 return rng.Next() < Fr ? 2 * dot(wi, h->n) * h->n - wi : *wt;
                             }
@@ -469,7 +469,13 @@ int main()
     param.depth = depth;
 
     std::vector<V> I(pixels);
-    chapter2(I, param);
+    const int chapter = 2;
+    switch (chapter)
+    {
+        case 1: chapter1(I, param); break;
+        case 2: chapter2(I, param); break;
+        default: chapter1(I, param); break;
+    }    
 
     PPM ppm(width, height);
     for (int i = 0; i < pixels; ++i)
