@@ -167,15 +167,15 @@ struct RenderParam
 // 合わせ鏡シーンを作る
 void createTestScene(const RenderParam& param, Scene& scene, Camera& camera)
 {
-    scene.spheres.push_back({ V(27,16.5,47), 16.5, SurfaceType::Diffuse, (.999) });
-    scene.spheres.push_back({ V(73,16.5,78), 16.5, SurfaceType::Diffuse, V(.999) });
+    scene.spheres.push_back({ V(27,16.5,47),           16.5, SurfaceType::Diffuse, (.999) });
+    scene.spheres.push_back({ V(73,16.5,78),           16.5, SurfaceType::Diffuse, V(.999) });
     scene.spheres.push_back({ V(1e5 + 1, 40.8, 81.6),   1e5, SurfaceType::Mirror, V(.75, .75, .75) });  // Left 
     scene.spheres.push_back({ V(-1e5 + 99, 40.8, 81.6), 1e5, SurfaceType::Mirror, V(.75, .75, .75) });  // Right 
     scene.spheres.push_back({ V(50, 40.8, 1e5),         1e5, SurfaceType::Diffuse, V(.25, .25, .75) });  // Back
-                                                                                                         //scene.spheres.push_back({ V(50, 40.8, -1e5 + 170), 1e5, SurfaceType::Diffuse, V(.75, .75, .75) }); // Front
+    //scene.spheres.push_back({ V(50, 40.8, -1e5 + 170), 1e5, SurfaceType::Diffuse, V(.75, .75, .75) }); // Front
     scene.spheres.push_back({ V(50, 1e5, 81.6),         1e5, SurfaceType::Diffuse, V(.75, .75, .75) });  // Bottom
     scene.spheres.push_back({ V(50, -1e5 + 81.6, 81.6), 1e5, SurfaceType::Diffuse, V(.75, .75, .75) });  // Top
-    scene.spheres.push_back({ V(50,681.6 - .27,81.6), 600, SurfaceType::Diffuse, V(), V(12) }); // Light
+    scene.spheres.push_back({ V(50,681.6 - .27,81.6),   600, SurfaceType::Diffuse, V(), V(12) }); // Light
 
                                                                                                 // カメラパラメータ設定   
     camera.eye = V(5.0, 52.0, 280.0);
