@@ -145,7 +145,7 @@ namespace
         ));
     }
 
-    // 色の整数値 RGB をベクトルに変換 
+    /// 色の整数値 RGB をベクトルに変換 
     V fromColor(const uint32_t color)
     {
         double red = static_cast<double>((color & 0xFF0000) >> 16);
@@ -392,7 +392,8 @@ void chapter2(std::vector<V>& image, const RenderParam& param)
                                     const double y = r * sin(t);
                                     return V(x, y,
                                         std::sqrt(
-                                            std::max(.0, 1 - x*x - y*y)));
+                                            std::max(.0, 1 - x*x - y*y))
+                                        );
                                 }();
                                 // 方向のワールド座標変換
                                 return std::get<0>(tuple) * d.x + std::get<1>(tuple) * d.y + n * d.z;
