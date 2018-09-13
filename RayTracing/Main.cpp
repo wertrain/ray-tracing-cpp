@@ -18,6 +18,9 @@
 
 namespace
 {
+    /// 反射率
+    const float IOR = 1.5168f;
+
     struct Sphere;
 
     /// レイ
@@ -48,12 +51,12 @@ namespace
     /// 球
     struct Sphere
     {
-        V p;                 ///< 中心位置
-        double r;            ///< 半径
-        SurfaceType type;    ///< 表面材質の種類
-        V R;                 ///< 反射率 [Reflectance]
-        V Le;                ///< 照度 [Illuminance]
-        double ior = 1.5168; ///< 屈折率
+        V p;               ///< 中心位置
+        double r;          ///< 半径
+        SurfaceType type;  ///< 表面材質の種類
+        V R;               ///< 反射率 [Reflectance]
+        V Le;              ///< 照度 [Illuminance]
+        double ior = IOR;  ///< 屈折率
 
         /** 
          * 交差判定
