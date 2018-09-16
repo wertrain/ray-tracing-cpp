@@ -4,6 +4,9 @@
  */
 #pragma once
 
+/**
+ * PPM ‰æ‘œ‚Ìo—Í
+ */
 class PPM
 {
 public:
